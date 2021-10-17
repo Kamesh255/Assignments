@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+   <style>
+        #navbar{
+            width: 100%;
+            height: 100%;
+            display: flex; 
+            margin: auto;
+            /* border: 1px solid green; */
+           
+        }
+        #menu{
+            width: 2%;
+            height:100%;
+            padding: 0;
+            margin-top: 40px;
+            border: none;
+        }
+        #menuimg{
+            width: 100%;
+            height: 100%;
+        }
+        #iconbox{
+            width: 20%;
+            height: 50%; 
+            margin-left: 50px;
+        }
+        #icon{
+            width: 50%;
+            height:100px
+        }
+        #searchBox{
+           /* border: 1px solid green; */
+            display: grid;
+            grid-template-columns: 90% 10%; 
+            width: 50%;
+            height: 100%;
+            margin: auto;
+            margin-left: -20px;
+        }
+
+        #searchBox > div{
+            margin: 10px;
+            
+        }
+        #imgs{
+            width: 100%;
+            height: 100%;
+            border: 1px solid;
+        }
+        #notification{
+            /* margin: 0; */
+            width: 20%;
+            height: 70%;
+            display: flex;
+           
+            /* border: 1px solid red; */
+            margin-top: 30px;
+            float: left;
+
+        }
+        #notification > button{
+            margin: auto;
+        }
+        #query{
+            width: 100%;
+            height: 100%;
+        }
+        #page{
+            width: 100%;
+            display: grid;
+            grid-template-columns: 20% 80%;
+        }
+        
+        #videos{
+             display: grid;
+             grid-template-columns:repeat(4, 20%) ;
+             grid-gap: 5%;
+             margin-top: 5px;
+        }
+        #buttons{
+            display: grid;
+            grid-template-columns: 80%;
+            height: 500px;
+            /* margin: 10px;  */
+        }
+        #buttons > button{
+            margin: 10px;
+            width: 100%;
+            height: 80%;
+            border: none;
+        }
+        #buttons > button:hover{
+            box-shadow: 10px 5px 5px gray;
+        }
+        #cat {
+            width: 100%;
+            height:50px;
+             
+            display:flex ; 
+        }
+        #cat > button{
+            margin: 10px;
+            width: 8%;
+            border-radius: 15px;
+            border:none;
+        
+        }
+        #cat > button:hover{
+            box-shadow: 10px 5px 5px gray;
+        }
+        #cr,#apps,#noti{
+                font-size: larger;
+                background: rgb(144,144,144,0.219);
+                color: white;
+                margin-left: 2%;
+            }
+            #apps,#noti,#sign{
+                margin-left: 3%;
+            }
+
+
+    </style>
+</head>
+<body>
+    <div id="navbar"> 
+           <button id="menu">
+               <img id="menuimg" src="https://tse3.mm.bing.net/th?id=OIP.jNyMFtQ_DI81sgM-vqrMogHaHa&pid=Api"></img>
+            </button> 
+        <div id="iconbox"> 
+            <img id="icon" src="https://tse2.explicit.bing.net/th?id=OIP.guAHPzF3z7O3RxByPQ9G1QHaEX&pid=Api">
+        </div>
+        <div id="searchBox">
+            <div>
+                <input type="text" id="query" placeholder="search for a video"/>
+            </div>
+            <div>
+                <img id="imgs" onclick="searchVideos()"src="https://tse2.mm.bing.net/th?id=OIP.aLu3kzZpNRhb65EehcszJQHaFv&pid=Api"></img>
+                
+            </div> 
+        </div>  
+        <div id="notification">
+            <button id='cr'><i class="fa fa-camera-retro" ></i></button>
+            <button id='apps'><i class="fa fa-th"></i></button>
+            <button id='noti'><i class="fa fa-bell"></i></button>
+        </div>
+    </div>
+    <div id="page">
+        <div id="buttons">
+            
+            <button><i class="fas fa-home nav-icon" ></i> Home</button>
+            <button>Explore</button>
+            <button> Subscriptions</button>
+            <button> Library</button>
+            <button> History</button>
+            <button> your video</button>
+            <button> Watch later</button>
+        </div>
+        <div>
+            <div id="cat">
+                <button>All</button>
+                <button>Mixes</button>
+                <button>Music</button>
+                <button>Comedies</button>
+                <button>Scene</button>
+                <button>T-Series</button> 
+            </div>
+            <div id="videos"></div>
+        </div>
+       
+    </div>
+   
+</body>
+</html>
+
+<script>
+    
+     
+   let videos = document.getElementById("videos");
+   
+   async function searchVideos(){
+   
+       let query = document.getElementById("query").value  
+       
+       let res = await fetch(
+          `https://youtube.googleapis.com/youtube/v3/search?q=${query}&type=video&key=AIzaSyAry-NstHgPuuuhevjHRDIaMF59JW7e8Ts&maxResults=20`
+          );
+    let data = await res.json();
+    console.log("data:",data);
+   
+    appendVideos(data.items);
+    }
+     
+    function appendVideos(video_deta){
+        videos.innerHTML = null
+   
+        video_deta.forEach(({id: {videoId} }) =>{
+   
+           let div = document.createElement("div");
+   
+           div.innerHTML = `<iframe width="100%" height="215" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+        
+           videos.append(div);
+        })
+    }
+   </script>
