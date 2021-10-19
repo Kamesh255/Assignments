@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: rgb(194, 182, 13);
+        } 
+        input{
+            width: 200px;
+        }
+        #search{ 
+            text-align: center;
+        }
+        #movies {
+            height: 100px;
+            width: 200px;
+            /* border: 1px solid rgb(163, 148, 12); */
+            overflow: scroll;
+            border-top: none; 
+            margin: auto;
+          
+        }
+        #movieCol{ 
+            display: grid;
+            grid-template-columns:25% 25% 25% 25%;
+            grid-gap: 10px;
+        }
+        .div{
+            background-color: rgb(163, 148, 12);
+            display: grid;
+            grid-template-rows: 75% 25%;
+            font-size: 20px;
+        }
+        .Poster{
+            width: 100%;
+            height: 100%;
+        }
+      
+    </style>
+</head>
+<body>
+    <div id="box">
+        <div id="search"> 
+            <h1>Search  Movies</h1>
+            <input  oninput="debounce(main,1000)" type="text" id="movie" placeholder="Enter movie name"> 
+        </div>
+        <div id="movies"></div>
+        <div id="movieCol"></div>
+    </div>
+ 
+</body>
+</html>
+<script>
+
+    var timerId;
+
+    let movies_div = document.getElementById("movies");
+
+    
+  
+
+    async function searchMovies(movie_name){
+        try {
+        let res = await fetch(`http://www.omdbapi.com/?i=tt3896198&apikey=866df714&s=${movie_name}`);
+
+        let data = await res.json(); 
+        return data
+
+    } catch (e) {
+        console.log("e:",e);
+    } 
+}
+
+function appendMovies(movies){ 
+    if(movies === undefined){
+        return false
+    }
+    movies_div.innerHTML = null;
+
+    movies.forEach(function(movie){
+
+        let p = document.createElement("p");
+        p.innerText = movie.Title
+
+        movies_div.append(p);
+    });
+}
+
+async function main(){
+
+    let name = document.getElementById("movie").value
+    //sourch movies
+    if(movie == ""){ 
+        movie = "Trending"
+       }
+
+    if(name.length < 3){
+        return false;
+    }
+
+    let res = await searchMovies(name);
+
+    let movies_data = res.Search;
+
+    appendMovies(movies_data);
+
+    console.log("res:" , res) 
+    movieColection(res.Search)
+}
+
+function debounce(func,delay){
+    // lets talk about A
+    // func = main()
+    //ave - setTimeout - func - main() - searchmovie("ave")
+    //aven -  clear the prev timeout - setTimeout - func() - main() - searchMovies("aven")
+if (timerId){
+    clearTimeout(timerId) 
+}
+   timerId =  setTimeout(function(){ 
+    func();
+    },delay)
+}
+
+function movieColection(News_data){
+
+    movieCol.innerHTML = null
+
+ News_data.map((el) =>{
+        let div = document.createElement("div");
+        div.setAttribute("class","div")
+
+     
+         let div1 = document.createElement("div1");
+         div1.setAttribute("class","div1")
+
+         let div2 = document.createElement("div2");
+         div2.setAttribute("class","div2")
+         
+         let Title = document.createElement("p");
+         Title.textContent = el.Title
+         Title.setAttribute("class","Title") 
+
+            let Type = document.createElement("p");
+         Type.textContent = el.Type
+         Type.setAttribute("class","Type") 
+
+            let Year = document.createElement("p");
+         Year.textContent = el.Year
+         Year.setAttribute("class","Year") 
+
+         let Poster = document.createElement("img");
+         Poster.src = el.Poster
+         Poster.setAttribute("class","Poster")
+
+         div1.append(Poster)
+         div2.append(Title,Type,Year)
+         div.append(div1,div2)
+         movieCol.append(div)
+ })
+}
+
+</script>
